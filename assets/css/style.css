@@ -3,14 +3,69 @@
 body {
     padding: 0;
     margin: 0;
-    background-color: #040D12;
+    /* background-color: #040D12; */
 }
 
 .container {
+    max-width: 1050px;
     margin: auto;
+}
+
+.middle {
     width: 450px;
     user-select: none;
 }
+
+.left, .middle, .right {
+    display: table-cell;
+}
+
+.left {
+    width: 300px;
+}
+
+.right {
+    min-width: 300px;
+}
+
+
+/* Menu */
+
+.menu {
+    width: 150px;
+    margin: auto;
+}
+
+.menu > header > h6{
+    width: 100%;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 5px;
+    color: #AAA;
+    font-weight: 200px;
+    font-family: Lato, sans-serif, 'Open Sans', sans-serif;
+}
+
+.button {
+    width: 40px;
+    height: 40px;
+    margin: 0 3px 5px 3px;
+    border: none;
+    vertical-align: top;
+}
+
+.bar1, .bar2, .bar3 {
+    width: 75%;
+    height: 10%;
+    background-color: #333;
+    margin: 10%;
+}
+
+i {
+    font-size: 25px;
+}
+
+/* Sudoku Board */
 
 #play-area {
     text-align: center;
@@ -21,13 +76,13 @@ body {
 }
 
 .cell {
-    width: 50px;
-    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
     border: 1px solid #AAA;
     box-sizing: border-box;
     background-color: white;
     font-family: Lato, sans-serif, 'Open Sans', sans-serif;
-    font-weight: 900;
+    font-weight: 500;
     font-size: 39px;
 }
 
