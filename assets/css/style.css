@@ -56,9 +56,17 @@ body {
     text-align: center;
 }
 
+.button:hover {
+    cursor: pointer;
+}
+
 .small-button {
     width: 40px;
     height: 40px;
+}
+
+.menu-hide {
+    transition: visibility 2s, opacity 2s linear;
 }
 
 .large-button {

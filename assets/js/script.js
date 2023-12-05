@@ -1,7 +1,24 @@
+// Styles
+const togglableElements = document.getElementsByClassName("menu-hide");
+
+function displayMenu(button) {
+    // display is not animatable
+    Object.keys(togglableElements).forEach(function(key) {
+        if (togglableElements[key].style.display === "none") {
+            togglableElements[key].style.display = "inline";
+        }
+        else {
+            togglableElements[key].style.display = "none";
+        }
+    });
+}
+
+// Functionality
 const table = document.getElementById('play-area');
 const cells = [];
 let previousId = 0;
 let currentCell = -1;
+
 
 document.addEventListener("keydown", (e) => {
     if (currentCell === -1 || cells[currentCell].children[0].classList.contains("predefined")) return;
@@ -20,6 +37,8 @@ function startup(){
                 element.setAttribute('onmousedown', `workOnCell(${i*9+j})`);
         }
     }
+    fetchBoard("https://6550e0cc7d203ab6626e476a.mockapi.io/api/v1/SudokuBoard/1");
+    squareBorder(3, "2px solid #888");
 };
 
 function workOnCell(cellId) {
@@ -81,9 +100,6 @@ function fetchBoard(url) {
         // fillBoard("534678912672195348198342567859761423426853791713924856961537284287419635345286179");
     })
 }
-
-fetchBoard("https://6550e0cc7d203ab6626e476a.mockapi.io/api/v1/SudokuBoard/1");
-squareBorder(3, "2px solid #888");
 
 startup();
 
