@@ -9,6 +9,18 @@ function displayMenu() {
     });
 }
 
+$(document).ready(function() {
+    $('#funButton').click(function() {
+        let text = $('#rotatingText').text();
+        let rotatedText = text.substring(1) + text.charAt(0);
+        $('#rotatingText').text(rotatedText);
+    });
+    $('body').css({
+        'background-color': "#040D12",
+        // 'background-color': 'white',
+    });
+});
+
 // Functionality
 const table = document.getElementById('play-area');
 const cells = [];
@@ -139,8 +151,9 @@ function isBoardSolved(possibleAnswer) {
 // 63 64 65 66 67 68 69 70 71
 // 72 73 74 75 76 77 78 79 80
 
-async function isBoardCorrect() {
-    let possibleAnswer = ""
+function isBoardCorrect() {
+    let isCorrect = true;
+    let possibleAnswer = "";
     for (let i = 0, row; row = table.rows[i]; i++) {
         for (let j = 0, element; element = row.cells[j]; j++) {
             if (i === 0) console.log(element.children);
@@ -149,24 +162,31 @@ async function isBoardCorrect() {
     }
 
     console.log("a");
-    if (!areCellsValid()) return false;
+    if (!areCellsValid()) isCorrect = false;
     console.log("b");
-    if (!areCellsFilled(possibleAnswer)) return false;
+    if (!areCellsFilled(possibleAnswer)) isCorrect = false;
     console.log("c");
-    if (!isBoardSolved(possibleAnswer)) return false;
+    if (!isBoardSolved(possibleAnswer)) isCorrect = false;
     console.log("d");
 
+    fetchSolution("https://6550e0cc7d203ab6626e476a.mockapi.io/api/v1/SudokuSolutions/1")
+        .then(answer => {
+            console.log("e");
+            console.log(answer);
+            console.log(possibleAnswer);
+            console.log(possibleAnswer === answer);
+            alert(possibleAnswer === answer ? "Board is correct!" : "Board is INCORRECT!");
+            return possibleAnswer === answer;
+        });
+}
+
+async function fetchSolution(url) {
     let answer;
-    await $.getJSON("https://6550e0cc7d203ab6626e476a.mockapi.io/api/v1/SudokuSolutions/1", function(data) {
+    await $.getJSON(url, function(data) {
         answer = data.solution;
         console.log(data.solution);
-        console.log(data.solution === possibleAnswer);
     })
-    console.log("e");
-    console.log(answer);
-    console.log(possibleAnswer);
-    console.log(possibleAnswer === answer);
-    return possibleAnswer === answer;
+    return answer
 }
 
 function fetchBoard(url) {
@@ -206,5 +226,32 @@ function highlightNumber(number) {
     }
 }
 
-startup();
+function showErrors() {
+    clearHighlights();
+    isHighlighted = true;
+    fetchSolution("https://6550e0cc7d203ab6626e476a.mockapi.io/api/v1/SudokuSolutions/1")
+        .then(answer => {
+            for (let i = 0, row; row = table.rows[i]; i++) {
+                for (let j = 0, element; element = row.cells[j]; j++) {
+                    if (element.children[0].textContent !== ' ' && element.children[0].textContent !== answer.charAt(i*9+j)) {
+                        element.style.backgroundColor = "#cd919e";
+                        console.log("" + element.children[0].textContent + " != " + answer[i*9+j]);
+                    }
+                }
+            }
+        });
+}
 
+function fillAnswers() {
+    clearHighlights();
+    fetchSolution("https://6550e0cc7d203ab6626e476a.mockapi.io/api/v1/SudokuSolutions/1")
+        .then(answer => {
+            for (let i = 0, row; row = table.rows[i]; i++) {
+                for (let j = 0, element; element = row.cells[j]; j++) {
+                    element.children[0].textContent = answer.charAt(i*9+j);
+                }
+            }
+        });
+}
+
+startup();
