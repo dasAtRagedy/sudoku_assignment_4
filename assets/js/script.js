@@ -1,8 +1,9 @@
 // Styles
 const togglableElements = document.getElementsByClassName("menu-hide");
 
+// (2.a)
 function displayMenu() {
-    // display is not animatable
+    // display is not animatable :()
     Object.keys(togglableElements).forEach(function(key) {
         if (togglableElements[key].style.display === "none") {
             togglableElements[key].style.display = "inline";
@@ -53,23 +54,18 @@ function workOnCell(cellId) {
     cells[cellId].style.backgroundColor = "#EEE";
     const cell = cells[cellId];
     console.log(`clicked ${cellId}`);
-    
-    // $.getJSON("https://6550e0cc7d203ab6626e476a.mockapi.io/api/v1/SudokuSolutions/1", function(data) {
-    //     console.log(isBoardCorrect(data.solution));
-    // })
-    
 };
 
 function squareBorder(boxSize, style) {
     for (let i = 0, row; row = table.rows[i]; i++) {
         for (let j = 0, element; element = row.cells[j]; j++) {
-                if (i % boxSize == 0)
+                if (i % boxSize === 0)
                     element.style.borderTop = style;
-                if (i % boxSize == boxSize-1)
+                if (i % boxSize === boxSize-1)
                     element.style.borderBottom = style;
-                if (j % boxSize == 0)
+                if (j % boxSize === 0)
                     element.style.borderLeft = style;
-                if (j % boxSize == boxSize-1)
+                if (j % boxSize === boxSize-1)
                     element.style.borderRight = style;
         }
     }
@@ -78,7 +74,7 @@ function squareBorder(boxSize, style) {
 function fillBoard(board) {
     for (let i = 0, row; row = table.rows[i]; i++) {
         for (let j = 0, element; element = row.cells[j]; j++) {
-            if(board[i*9+j] == 'x') {
+            if(board[i*9+j] === 'x') {
                 continue;
             }
             element.innerHTML = `<span class=\"fixed-cell predefined\" style=\"color:black\">${board[i*9+j]}</span>`;
@@ -86,23 +82,102 @@ function fillBoard(board) {
     }
 }
 
-function isBoardCorrect(answer) {
-    possibleAnswer = ""
+function areCellsValid() {
+    for (let i = 0, row; row = table.rows[i]; i++) {
+        for (let j = 0, element; element = row.cells[j]; j++) {
+            // Check if there are any invalid characters (1.b)
+            if (element.children[0].textContent.length !== 1 || 
+                element.children[0].textContent !== ' ' && isNaN(element.children[0].textContent))
+            {
+                return false;
+            }
+
+            // Check if numbers are not negative / Unnecessary :) (1.a)
+            if (parseInt(element.children[0].textContent) < 1) {
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
+function areCellsFilled(possibleAnswer) {
+    return !possibleAnswer.includes(' ');
+}
+
+function isBoardSolved(possibleAnswer) {
+    let n = 9;
+    const v = Array(n);
+
+    for (let i = 0; i < n; i++) {
+        v.fill(false);
+        for (let j = 0; j < n; j++) {
+            if (v[parseInt(possibleAnswer.charAt(i*9 + j))]) return false;
+            v[parseInt(possibleAnswer.charAt(i*9 + j))] = true;
+        }
+
+        v.fill(false);
+        for (let j = 0; j < n; j++) {
+            if (v[parseInt(possibleAnswer.charAt(j*9 + i))]) return false;
+            v[parseInt(possibleAnswer.charAt(j*9 + i))] = true;
+        }
+
+        v.fill(false);
+        for (let j = 0; j < n; j++) {
+            if (v[parseInt(possibleAnswer.charAt(Math.floor(j/3)*9 + j%3 + i%3*3 + 27*(Math.floor(i/3))))]) return false;
+            v[parseInt(possibleAnswer.charAt(Math.floor(j/3)*9 + j%3 + i%3*3 + 27*(Math.floor(i/3))))] = true;
+        }
+        console.log("wtf");
+    }
+
+    return true;
+}
+
+//  0  1  2  3  4  5  6  7  8
+//  9 10 11 12 13 14 15 16 17
+// 18 19 20 21 22 23 24 25 26
+// 27 28 29 30 31 32 33 34 35
+// 36 37 38 39 40 41 42 43 44
+// 45 46 47 48 49 50 51 52 53
+// 54 55 56 57 58 59 60 61 62
+// 63 64 65 66 67 68 69 70 71
+// 72 73 74 75 76 77 78 79 80
+
+async function isBoardCorrect() {
+    let possibleAnswer = ""
     for (let i = 0, row; row = table.rows[i]; i++) {
         for (let j = 0, element; element = row.cells[j]; j++) {
             if (i === 0) console.log(element.children);
             possibleAnswer += element.children[0].textContent;
         }
     }
+
+    console.log("a");
+    if (!areCellsValid()) return false;
+    console.log("b");
+    if (!areCellsFilled(possibleAnswer)) return false;
+    console.log("c");
+    if (!isBoardSolved(possibleAnswer)) return false;
+    console.log("d");
+
+    let answer;
+    await $.getJSON("https://6550e0cc7d203ab6626e476a.mockapi.io/api/v1/SudokuSolutions/1", function(data) {
+        answer = data.solution;
+        console.log(data.solution);
+        console.log(data.solution === possibleAnswer);
+    })
+    console.log("e");
     console.log(answer);
     console.log(possibleAnswer);
+    console.log(possibleAnswer === answer);
     return possibleAnswer === answer;
 }
 
 function fetchBoard(url) {
     $.getJSON(url, function(data) {
-        fillBoard(data.board);
-        // fillBoard("534678912672195348198342567859761423426853791713924856961537284287419635345286179");
+        // fillBoard(data.board);
+        fillBoard("534678912672195348198342567859761423426853791713924856961537284287419635345286179");
     })
 }
 
