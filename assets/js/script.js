@@ -3,14 +3,9 @@ const togglableElements = document.getElementsByClassName("menu-hide");
 
 // (2.a)
 function displayMenu() {
-    // display is not animatable :()
-    Object.keys(togglableElements).forEach(function(key) {
-        if (togglableElements[key].style.display === "none") {
-            togglableElements[key].style.display = "inline";
-        }
-        else {
-            togglableElements[key].style.display = "none";
-        }
+    // display is not animatable :(
+    $.each(togglableElements, function(key, element) {
+        $(element).css('display') === 'none' ? $(element).css('display', 'inline') : $(element).css('display', 'none');
     });
 }
 
@@ -176,8 +171,8 @@ async function isBoardCorrect() {
 
 function fetchBoard(url) {
     $.getJSON(url, function(data) {
-        // fillBoard(data.board);
-        fillBoard("534678912672195348198342567859761423426853791713924856961537284287419635345286179");
+        fillBoard(data.board);
+        // fillBoard("534678912672195348198342567859761423426853791713924856961537284287419635345286179");
     })
 }
 
