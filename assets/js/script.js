@@ -18,6 +18,7 @@ const table = document.getElementById('play-area');
 const cells = [];
 let previousId = 0;
 let currentCell = -1;
+let isHighlighted = true;
 
 
 document.addEventListener("keydown", (e) => {
@@ -42,6 +43,10 @@ function startup(){
 };
 
 function workOnCell(cellId) {
+    if (isHighlighted) {
+        clearHighlights();
+        isHighlighted = false;
+    }
     currentCell = cellId;
     cells[previousId].style.backgroundColor = "white";
     previousId = cellId;
@@ -106,6 +111,26 @@ function clearBoard() {
         for (let j = 0, element; element = row.cells[j]; j++) {
             if (!element.children[0].classList.contains("predefined")) {
                 element.innerHTML = `<span class="fixed-cell"> </span>`;
+            }
+        }
+    }
+}
+
+function clearHighlights() {
+    for (let i = 0, row; row = table.rows[i]; i++) {
+        for (let j = 0, element; element = row.cells[j]; j++) {
+            element.style.backgroundColor = "white";
+        }
+    }
+}
+
+function highlightNumber(number) {
+    clearHighlights();
+    isHighlighted = true;
+    for (let i = 0, row; row = table.rows[i]; i++) {
+        for (let j = 0, element; element = row.cells[j]; j++) {
+            if (element.children[0].textContent === number.toString()) {
+                element.style.backgroundColor = "#cd919e";
             }
         }
     }
