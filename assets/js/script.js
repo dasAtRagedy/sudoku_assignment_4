@@ -1,9 +1,7 @@
 // Styles
 const togglableElements = document.getElementsByClassName("menu-hide");
 
-// (2.a)
 function displayMenu() {
-    // display is not animatable :(
     $.each(togglableElements, function(key, element) {
         $(element).css('display') === 'none' ? $(element).css('display', 'inline') : $(element).css('display', 'none');
     });
@@ -16,8 +14,8 @@ $(document).ready(function() {
         $('#rotatingText').text(rotatedText);
     });
     $('body').css({
-        'background-color': "#040D12",
-        // 'background-color': 'white',
+        // 'background-color': "#040D12",
+        'background-color': 'white',
     });
 });
 
@@ -92,15 +90,9 @@ function fillBoard(board) {
 function areCellsValid() {
     for (let i = 0, row; row = table.rows[i]; i++) {
         for (let j = 0, element; element = row.cells[j]; j++) {
-            // Check if there are any invalid characters (1.b)
             if (element.children[0].textContent.length !== 1 || 
                 element.children[0].textContent !== ' ' && isNaN(element.children[0].textContent))
             {
-                return false;
-            }
-
-            // Check if numbers are not negative / Unnecessary :) (1.a)
-            if (parseInt(element.children[0].textContent) < 1) {
                 return false;
             }
         }
@@ -192,11 +184,11 @@ async function fetchSolution(url) {
 function fetchBoard(url) {
     $.getJSON(url, function(data) {
         fillBoard(data.board);
-        // fillBoard("534678912672195348198342567859761423426853791713924856961537284287419635345286179");
     })
 }
 
 function clearBoard() {
+    clearHighlights();
     for (let i = 0, row; row = table.rows[i]; i++) {
         for (let j = 0, element; element = row.cells[j]; j++) {
             if (!element.children[0].classList.contains("predefined")) {
